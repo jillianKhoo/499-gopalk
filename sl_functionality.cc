@@ -5,8 +5,8 @@ ServiceLayerFunctionality::ServiceLayerFunctionality(const bool& testing) {
   // gRPC)
   if (testing) {
     client_ = new KeyValueClientTest();
-  } else {  // Else use KeyValueClient that connects to the KeyValueServer over
-            // gRPC
+  } else {
+    // Else use KeyValueClient that connects to the KeyValueServer over gRPC
     client_ = new KeyValueClient(grpc::CreateChannel(
         "localhost:50000", grpc::InsecureChannelCredentials()));
   }
