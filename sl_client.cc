@@ -111,7 +111,29 @@ const google::protobuf::RepeatedPtrField<chirp::Chirp> ServiceLayerClient::read(
     return chirp;
   }
 }
+void ServiceLayerClient::stream(const std::string& username, const std::string& hashtag) {
+  // create request with username of monitoring user
+  StreamRequest request;
+  request.set_username(username);
+  request.set_hashtag(hashtag);
 
+  // create object to store stream of replies
+  StreamReply reply;
+
+  // create context for additional information from server
+  ClientContext context;
+
+  // create `reader` to read stream of data from server
+  std::unique_ptr<ClientReader<StreamReply> > reader(stub_->stream(&context, request));
+  while(reader->Read(&reply)) {
+    std::cout << "\"" << reply.chirp().text() << "\"" << " - " << reply.chirp().username() << " ID: " << reply.chirp().id() << std::endl;
+  }
+  Status status = reader->Finish();
+  if (!status.ok()) {
+    std::cout << "Stream rpc failed" << std::endl;
+    LOG(ERROR) << status.error_code() << ": " << status.error_message() << std::endl;
+  }
+}
 void ServiceLayerClient::monitor(const std::string& username) {
   // create request with username of monitoring user
   MonitorRequest request;

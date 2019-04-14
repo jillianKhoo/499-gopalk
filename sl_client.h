@@ -26,6 +26,8 @@ using chirp::ReadRequest;
 using chirp::ReadReply;
 using chirp::MonitorRequest;
 using chirp::MonitorReply;
+using chirp::StreamRequest;
+using chirp::StreamReply;
 using chirp::ServiceLayer;
 
 // interface to send grpc request to the service layer
@@ -46,6 +48,8 @@ class ServiceLayerClient {
   // takes chirpID of beginning of thread
   // returns string of chirp thread
   const google::protobuf::RepeatedPtrField<chirp::Chirp> read(const std::string& chirp_id);
+  // waits for service layer to send chirps with given hashtag
+  void stream(const std::string& username, const std::string& hashtag);
   // waits for service layer to send chirps of following users
   void monitor(const std::string& username);
  private:
