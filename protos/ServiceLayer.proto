@@ -59,10 +59,20 @@ message MonitorReply {
   Chirp chirp = 1;
 }
 
+message StreamRequest {
+  string username = 1;
+  string hashtag = 2;
+}
+
+message StreamReply {
+  Chirp chirp = 1;
+}
+
 service ServiceLayer {
   rpc registeruser (RegisterRequest) returns (RegisterReply) {}
   rpc chirp (ChirpRequest) returns (ChirpReply) {}
   rpc follow (FollowRequest) returns (FollowReply) {}
   rpc read (ReadRequest) returns (ReadReply) {}
+  rpc stream (StreamRequest) returns (stream StreamReply) {}
   rpc monitor (MonitorRequest) returns (stream MonitorReply) {}
 }

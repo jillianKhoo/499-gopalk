@@ -58,6 +58,27 @@ Status ServiceLayerServer::read(ServerContext* context, const ReadRequest* reque
   return Status::OK;
 }
 
+Status ServiceLayerServer::stream(ServerContext* context, const StreamRequest* request, ServerWriter<StreamReply>* writer){
+  // initial set up to start listening on the given hashtag
+  sl_func_.start_stream(request->username(), request->hashtag());
+  // keep polling the database while stream is true
+  while(!context->IsCancelled()) {
+    // request the new chirps
+    Chirps chirps = sl_func_.stream(request->username());
+    // loop through the chirps and add them to the reply
+    for (int i = 0; i < chirps.chirps_size(); i++) {
+      // add each chirp to stream
+      StreamReply stream_reply;
+      Chirp *chirp = stream_reply.mutable_chirp();
+      *chirp = chirps.chirps(i);
+      writer->Write(stream_reply);
+    }
+  }
+  // clear the stream so that new requests aren't stored
+  sl_func_.end_stream(request->username(), request->hashtag());
+  return Status::OK;
+}
+
 Status ServiceLayerServer::monitor(ServerContext* context, const MonitorRequest* request, ServerWriter<MonitorReply>* writer){
   // keep polling the database while monitor is true
   while(!context->IsCancelled()) {
