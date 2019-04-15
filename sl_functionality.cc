@@ -114,7 +114,7 @@ Chirps ServiceLayerFunctionality::stream(const std::string& username) {
 bool ServiceLayerFunctionality::start_stream(const std::string& username,
                                              const std::string& hashtag) {
   std::lock_guard<std::mutex> lock(sl_func_mtx_);
-  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos) {
+  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos || hashtag.find("#") != 0) {
     return false;
   }
   // Form streaming key for the given hashtag

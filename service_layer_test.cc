@@ -282,15 +282,24 @@ TEST(ServiceLayerFunctionalityTest, StreamInvalid) {
   delete chirp1;
 }
 
+// tests start_stream with invalid hashtags
+// start_stream should return false for an invalid hashtag
 TEST(ServiceLayerFunctionalityTest, InvalidHashtag) {
   ServiceLayerFunctionality sl_func(true);
   sl_func.registeruser("jillian");
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
+
+  // start_stream should not accept a hashtag without characters after it
   bool start = sl_func.start_stream("jillian", "#");
   EXPECT_EQ(start, false);
 
+  // start_stream should not accept a hashtag without a # in front
   start = sl_func.start_stream("jillian", "athenahacks");
   EXPECT_EQ(start, false);
+  start = sl_func.start_stream("jillian", "athena#hacks");
+  EXPECT_EQ(start, false);
+
+  // start_stream should not accept an empty hashtag
   start = sl_func.start_stream("jillian", "");
   EXPECT_EQ(start, false);
 }
