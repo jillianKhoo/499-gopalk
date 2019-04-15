@@ -52,7 +52,7 @@ Status ServiceLayerServer::read(ServerContext* context, const ReadRequest* reque
   }
   // Loop through all chirps and make them the reply
   for(int i = 0; i < chirps.size(); i++) {
-    Chirp *chirp = reply->mutable_chirps(i);
+    Chirp *chirp = reply->add_chirps();
     *chirp = chirps[i];
   }
   return Status::OK;

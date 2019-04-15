@@ -340,11 +340,13 @@ void ServiceLayerFunctionality::read_thread(const std::string& chirp_id,
     // Get all ids of the chirps' replies
     std::string kReplyParentKey = "reply::" + chirp_id;
     std::string replies_serial = client_->get(kReplyParentKey);
-    // parse replies and return
-    Replies replies;
-    replies.ParseFromString(replies_serial);
-    for (int i = 0; i < replies.id_size(); i++) {
-      read_thread(replies.id(i), chirps);
+    if (replies_serial.length() > 0){
+      // parse replies and return
+      Replies replies;
+      replies.ParseFromString(replies_serial);
+      for (int i = 0; i < replies.id_size(); i++) {
+        read_thread(replies.id(i), chirps);
+      }
     }
   }
 }
