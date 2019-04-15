@@ -101,12 +101,13 @@ int main(int argc, char *argv[]) {
       client.monitor(FLAGS_user);
     }
 
+    // stream flag provided, start streaming chirps with given hashtag
     if(!FLAGS_stream.empty()){
       client.stream(FLAGS_user, FLAGS_stream);
     }
 
     // if no other flag is provided with username, print a request for a command
-    if (FLAGS_chirp.empty() && FLAGS_follow.empty() && !FLAGS_monitor) {
+    if (FLAGS_chirp.empty() && FLAGS_follow.empty() && !FLAGS_monitor && FLAGS_stream.empty()) {
       std::cout << "No valid command requested." << std::endl;
       LOG(ERROR)  << "No valid command requested." << std::endl;
     }

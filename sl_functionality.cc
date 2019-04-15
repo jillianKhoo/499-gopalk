@@ -111,11 +111,11 @@ Chirps ServiceLayerFunctionality::stream(const std::string& username) {
   return chirps;
 }
 
-void ServiceLayerFunctionality::start_stream(const std::string& username,
+bool ServiceLayerFunctionality::start_stream(const std::string& username,
                                              const std::string& hashtag) {
   std::lock_guard<std::mutex> lock(sl_func_mtx_);
   if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos) {
-    return;
+    return false;
   }
   // Form streaming key for the given hashtag
   const std::string kStreamingKey = kHashtagStream_ + hashtag;
@@ -130,6 +130,7 @@ void ServiceLayerFunctionality::start_stream(const std::string& username,
   // put new list in database
   streamers.SerializeToString(&streaming_serial);
   client_->put(kStreamingKey, streaming_serial);
+  return true;
 }
 void ServiceLayerFunctionality::end_stream(const std::string& username,
                                            const std::string& hashtag) {
