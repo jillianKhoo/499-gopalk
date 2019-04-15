@@ -307,8 +307,6 @@ std::vector<std::string> ServiceLayerFunctionality::chirp_hashtag_check(
 
 void ServiceLayerFunctionality::stream_chirp(Chirp chirp,
                                              const std::string& hashtag) {
-  LOG(INFO) << "Someone is trying to stream a chirp with hashtag " << hashtag
-            << std::endl;
   const std::string kStreamingKey = kHashtagStream_ + hashtag;
   std::string streaming_serial = client_->get(kStreamingKey);
   Streamers streamers;

@@ -227,7 +227,8 @@ TEST(ServiceLayerFunctionalityTest, Stream) {
   ServiceLayerFunctionality sl_func(true);
   sl_func.registeruser("jillian");
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
-  sl_func.start_stream("jillian", "#Athenahacks");
+  bool start = sl_func.start_stream("jillian", "#Athenahacks");
+  EXPECT_EQ(start, true);
 
   Chirps chirps1 = sl_func.stream("jillian");
   // stream should not initially return a chirp
@@ -264,7 +265,8 @@ TEST(ServiceLayerFunctionalityTest, StreamInvalid) {
   ServiceLayerFunctionality sl_func(true);
   sl_func.registeruser("jillian");
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
-  sl_func.start_stream("jillian", "#Athenahacks");
+  bool start = sl_func.start_stream("jillian", "#Athenahacks");
+  EXPECT_EQ(start, true);
 
   Chirp *chirp1 = new Chirp();
   std::string username1 = "krishna";
@@ -278,6 +280,19 @@ TEST(ServiceLayerFunctionalityTest, StreamInvalid) {
   sl_func.end_stream("jillian", "#Athenahacks");
 
   delete chirp1;
+}
+
+TEST(ServiceLayerFunctionalityTest, InvalidHashtag) {
+  ServiceLayerFunctionality sl_func(true);
+  sl_func.registeruser("jillian");
+  EXPECT_EQ(sl_func.user_exists("jillian"), true);
+  bool start = sl_func.start_stream("jillian", "#");
+  EXPECT_EQ(start, false);
+
+  start = sl_func.start_stream("jillian", "athenahacks");
+  EXPECT_EQ(start, false);
+  start = sl_func.start_stream("jillian", "");
+  EXPECT_EQ(start, false);
 }
 
 int main(int argc, char* argv[]) {
