@@ -20,6 +20,7 @@ DEFINE_string(reply, "-1", "Indicates that the new chirp is a reply to the given
 DEFINE_string(follow, "", "Starts following the given username");
 DEFINE_string(read, "", "Reads the chirp thread starting at the given id");
 DEFINE_bool(monitor, false, "Streams new tweets from those currently followed");
+DEFINE_string(stream, "", "Streams new tweets containing the given hashtag");
 
 // prints chirps read from user onto command line
 // prints in layers based on the nested depth of the chirp reply
@@ -100,12 +101,17 @@ int main(int argc, char *argv[]) {
       client.monitor(FLAGS_user);
     }
 
+    // stream flag provided, start streaming chirps with given hashtag
+    if(!FLAGS_stream.empty()){
+      client.stream(FLAGS_user, FLAGS_stream);
+    }
+
     // if no other flag is provided with username, print a request for a command
-    if (FLAGS_chirp.empty() && FLAGS_follow.empty() && !FLAGS_monitor) {
+    if (FLAGS_chirp.empty() && FLAGS_follow.empty() && !FLAGS_monitor && FLAGS_stream.empty()) {
       std::cout << "No valid command requested." << std::endl;
       LOG(ERROR)  << "No valid command requested." << std::endl;
     }
-  } else if (!FLAGS_chirp.empty() || !FLAGS_follow.empty() || FLAGS_monitor) {
+  } else if (!FLAGS_chirp.empty() || !FLAGS_follow.empty() || FLAGS_monitor || !FLAGS_stream.empty()) {
     std::cout << "Cannot complete task without user logged in." << std::endl;
     LOG(ERROR)  << "Cannot complete task without user logged in." << std::endl;
   }
