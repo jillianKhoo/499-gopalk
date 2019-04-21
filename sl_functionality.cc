@@ -279,15 +279,15 @@ void ServiceLayerFunctionality::broadcast_chirp(const std::string& username,
       client_->put(follower_key, monitor_serial);
     }
   }
-  std::vector<std::string> hashtags = chirp_hashtag_check(chirp);
-  for (int i = 0; i < hashtags.size(); i++) {
-    stream_chirp(chirp, hashtags[i]);
+  std::set<std::string> hashtags = chirp_hashtag_check(chirp);
+  for (std::string hash : hashtags) {
+    stream_chirp(chirp, hash);
   }
 }
 
-std::vector<std::string> ServiceLayerFunctionality::chirp_hashtag_check(
+std::set<std::string> ServiceLayerFunctionality::chirp_hashtag_check(
     Chirp chirp) {
-  std::vector<std::string> hashtags;
+  std::set<std::string> hashtags;
   std::string message = chirp.text();
   size_t pos = message.find("#");
   while (pos != std::string::npos) {
@@ -297,7 +297,7 @@ std::vector<std::string> ServiceLayerFunctionality::chirp_hashtag_check(
     if (space != std::string::npos) {
       hashtag = hashtag.substr(0, space);
     }
-    hashtags.push_back(hashtag);
+    hashtags.insert(hashtag);
     message = message.substr(1);
     pos = message.find("#");
   }
