@@ -111,11 +111,11 @@ Chirps ServiceLayerFunctionality::stream(const std::string& username) {
   return chirps;
 }
 
-void ServiceLayerFunctionality::start_stream(const std::string& username,
+bool ServiceLayerFunctionality::start_stream(const std::string& username,
                                              const std::string& hashtag) {
   std::lock_guard<std::mutex> lock(sl_func_mtx_);
-  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos) {
-    return;
+  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos || hashtag.find("#") != 0) {
+    return false;
   }
   // Form streaming key for the given hashtag
   const std::string kStreamingKey = kHashtagStream_ + hashtag;
@@ -130,6 +130,7 @@ void ServiceLayerFunctionality::start_stream(const std::string& username,
   // put new list in database
   streamers.SerializeToString(&streaming_serial);
   client_->put(kStreamingKey, streaming_serial);
+  return true;
 }
 void ServiceLayerFunctionality::end_stream(const std::string& username,
                                            const std::string& hashtag) {
@@ -306,8 +307,6 @@ std::set<std::string> ServiceLayerFunctionality::chirp_hashtag_check(
 
 void ServiceLayerFunctionality::stream_chirp(Chirp chirp,
                                              const std::string& hashtag) {
-  LOG(INFO) << "Someone is trying to stream a chirp with hashtag " << hashtag
-            << std::endl;
   const std::string kStreamingKey = kHashtagStream_ + hashtag;
   std::string streaming_serial = client_->get(kStreamingKey);
   Streamers streamers;
@@ -340,11 +339,13 @@ void ServiceLayerFunctionality::read_thread(const std::string& chirp_id,
     // Get all ids of the chirps' replies
     std::string kReplyParentKey = "reply::" + chirp_id;
     std::string replies_serial = client_->get(kReplyParentKey);
-    // parse replies and return
-    Replies replies;
-    replies.ParseFromString(replies_serial);
-    for (int i = 0; i < replies.id_size(); i++) {
-      read_thread(replies.id(i), chirps);
+    if (replies_serial.length() > 0){
+      // parse replies and return
+      Replies replies;
+      replies.ParseFromString(replies_serial);
+      for (int i = 0; i < replies.id_size(); i++) {
+        read_thread(replies.id(i), chirps);
+      }
     }
   }
 }

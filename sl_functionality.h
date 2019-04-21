@@ -61,7 +61,8 @@ class ServiceLayerFunctionality {
   // return the current chirps broadcast to a user that is streaming
   Chirps stream(const std::string& username);
   // adds a user to the stream list for the given hashtag
-  void start_stream(const std::string& username, const std::string& hashtag);
+  // returns true if it is successful, returns false if there is an issue
+  bool start_stream(const std::string& username, const std::string& hashtag);
   // removes a user from the stream list for the given hashtag
   void end_stream(const std::string& username, const std::string& hashtag);
   // clears monitor value so that monitored chirps are no longer broadcast to
