@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <set>
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -89,7 +90,7 @@ class ServiceLayerFunctionality {
   void broadcast_chirp(const std::string& username, Chirp chirp);
   // checks a chirp for hashtags and returns a vector with all of the hashtags
   // the chirp contains
-  std::vector<std::string> chirp_hashtag_check(Chirp chirp);
+  std::set<std::string> chirp_hashtag_check(Chirp chirp);
   // broadcast a chirp to all users who are streaming for a given hashtag
   void stream_chirp(Chirp chirp, const std::string& hashtag);
   // client for keyvaluestore layer
