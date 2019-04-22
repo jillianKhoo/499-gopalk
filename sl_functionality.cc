@@ -281,8 +281,8 @@ void ServiceLayerFunctionality::broadcast_chirp(const std::string& username,
     }
   }
   std::set<std::string> hashtags = chirp_hashtag_check(chirp);
-  for (std::string hash : hashtags) {
-    stream_chirp(chirp, hash);
+  for (const std::string& tags : hashtags) {
+    stream_chirp(chirp, tags);
   }
 }
 
