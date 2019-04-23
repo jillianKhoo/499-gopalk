@@ -28,7 +28,9 @@ bool ServiceLayerClient::registeruser(const std::string& username) {
   }
 }
 
-Chirp ServiceLayerClient::chirp(const std::string& username, const std::string& text, const std::string& parent_id) {
+Chirp ServiceLayerClient::chirp(const std::string& username,
+                                const std::string& text,
+                                const std::string& parent_id) {
   // create request with username, text, and parent_id
   ChirpRequest request;
   request.set_username(username);
@@ -58,7 +60,8 @@ Chirp ServiceLayerClient::chirp(const std::string& username, const std::string& 
   }
 }
 
-bool ServiceLayerClient::follow(const std::string& username, const std::string& to_follow) {
+bool ServiceLayerClient::follow(const std::string& username,
+                                const std::string& to_follow) {
   // Send username of client and username of chirp user to follow
   FollowRequest request;
   request.set_username(username);
@@ -79,13 +82,15 @@ bool ServiceLayerClient::follow(const std::string& username, const std::string& 
     LOG(INFO) << "Status ok from ServiceLayerClient follow." << std::endl;
     return true;
   } else {
-    LOG(ERROR) << status.error_code() << ": " << status.error_message() << std::endl;
+    LOG(ERROR) << status.error_code() << ": " << status.error_message()
+               << std::endl;
     std::cout << status.error_message() << std::endl;
     return false;
   }
 }
 
-const google::protobuf::RepeatedPtrField<chirp::Chirp> ServiceLayerClient::read(const std::string& chirp_id) {
+const google::protobuf::RepeatedPtrField<chirp::Chirp> ServiceLayerClient::read(
+    const std::string& chirp_id) {
   // create request with id of chirp to read
   ReadRequest request;
   request.set_chirp_id(chirp_id);
@@ -105,13 +110,16 @@ const google::protobuf::RepeatedPtrField<chirp::Chirp> ServiceLayerClient::read(
     LOG(INFO) << "Status ok from ServiceLayerClient read." << std::endl;
     return reply.chirps();
   } else {
-    LOG(ERROR) << status.error_code() << ": " << status.error_message() << std::endl;
+    LOG(ERROR) << status.error_code() << ": " << status.error_message()
+               << std::endl;
     std::cout << status.error_message() << std::endl;
-    const google::protobuf::RepeatedPtrField<chirp::Chirp> chirp; // TODO: return null/invalid value
+    const google::protobuf::RepeatedPtrField<chirp::Chirp>
+        chirp;  // TODO: return null/invalid value
     return chirp;
   }
 }
-void ServiceLayerClient::stream(const std::string& username, const std::string& hashtag) {
+void ServiceLayerClient::stream(const std::string& username,
+                                const std::string& hashtag) {
   // create request with username of monitoring user
   StreamRequest request;
   request.set_username(username);
@@ -124,14 +132,18 @@ void ServiceLayerClient::stream(const std::string& username, const std::string& 
   ClientContext context;
 
   // create `reader` to read stream of data from server
-  std::unique_ptr<ClientReader<StreamReply> > reader(stub_->stream(&context, request));
-  while(reader->Read(&reply)) {
-    std::cout << "\"" << reply.chirp().text() << "\"" << " - " << reply.chirp().username() << " ID: " << reply.chirp().id() << std::endl;
+  std::unique_ptr<ClientReader<StreamReply> > reader(
+      stub_->stream(&context, request));
+  while (reader->Read(&reply)) {
+    std::cout << "\"" << reply.chirp().text() << "\""
+              << " - " << reply.chirp().username()
+              << " ID: " << reply.chirp().id() << std::endl;
   }
   Status status = reader->Finish();
   if (!status.ok()) {
     std::cout << "Stream rpc failed" << std::endl;
-    LOG(ERROR) << status.error_code() << ": " << status.error_message() << std::endl;
+    LOG(ERROR) << status.error_code() << ": " << status.error_message()
+               << std::endl;
   }
 }
 void ServiceLayerClient::monitor(const std::string& username) {
@@ -146,13 +158,17 @@ void ServiceLayerClient::monitor(const std::string& username) {
   ClientContext context;
 
   // create `reader` to read stream of data from server
-  std::unique_ptr<ClientReader<MonitorReply> > reader(stub_->monitor(&context, request));
-  while(reader->Read(&reply)) {
-    std::cout << "\"" << reply.chirp().text() << "\"" << " - " << reply.chirp().username() << " ID: " << reply.chirp().id() << std::endl;
+  std::unique_ptr<ClientReader<MonitorReply> > reader(
+      stub_->monitor(&context, request));
+  while (reader->Read(&reply)) {
+    std::cout << "\"" << reply.chirp().text() << "\""
+              << " - " << reply.chirp().username()
+              << " ID: " << reply.chirp().id() << std::endl;
   }
   Status status = reader->Finish();
   if (!status.ok()) {
     std::cout << "Monitor rpc failed" << std::endl;
-    LOG(ERROR) << status.error_code() << ": " << status.error_message() << std::endl;
+    LOG(ERROR) << status.error_code() << ": " << status.error_message()
+               << std::endl;
   }
 }

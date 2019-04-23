@@ -111,11 +111,12 @@ Chirps ServiceLayerFunctionality::stream(const std::string& username) {
   return chirps;
 }
 
-bool ServiceLayerFunctionality::start_stream(const std::string& username,
-                                             const std::string& hashtag) {
+std::string ServiceLayerFunctionality::start_stream(
+    const std::string& username, const std::string& hashtag) {
   std::lock_guard<std::mutex> lock(sl_func_mtx_);
-  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos || hashtag.find("#") != 0) {
-    return false;
+  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos ||
+      hashtag.find("#") != 0 || hashtag.find(" ") != std::string::npos) {
+    return "ERROR";
   }
   // Form streaming key for the given hashtag
   const std::string kStreamingKey = kHashtagStream_ + hashtag;
@@ -124,13 +125,16 @@ bool ServiceLayerFunctionality::start_stream(const std::string& username,
   Streamers streamers;
   streamers.ParseFromString(streaming_serial);
 
+  std::string user_id = stream_count();
+  increment_stream_count();
+
   // Add the username as a new streamer
-  streamers.add_username(username);
+  streamers.add_username(user_id);
 
   // put new list in database
   streamers.SerializeToString(&streaming_serial);
   client_->put(kStreamingKey, streaming_serial);
-  return true;
+  return user_id;
 }
 void ServiceLayerFunctionality::end_stream(const std::string& username,
                                            const std::string& hashtag) {
@@ -256,6 +260,26 @@ void ServiceLayerFunctionality::increment_chirp_count() {
   chirp_count_serial = std::to_string(count);
   client_->put(kChirpCountKey, chirp_count_serial);
 }
+std::string ServiceLayerFunctionality::stream_count() {
+  std::string kStreamCountKey_ = "stream_count::";
+  std::string stream_count_serial = client_->get(kStreamCountKey_);
+  if (stream_count_serial.empty()) {
+    return "0";
+  }
+  return stream_count_serial;
+}
+
+void ServiceLayerFunctionality::increment_stream_count() {
+  std::string kStreamCountKey_ = "stream_count::";
+  std::string stream_count_serial = client_->get(kStreamCountKey_);
+  int count = 0;
+  if (!stream_count_serial.empty()) {
+    count = std::stoi(stream_count_serial);
+  }
+  count++;
+  stream_count_serial = std::to_string(count);
+  client_->put(kStreamCountKey_, stream_count_serial);
+}
 
 void ServiceLayerFunctionality::broadcast_chirp(const std::string& username,
                                                 Chirp chirp) {
@@ -339,7 +363,7 @@ void ServiceLayerFunctionality::read_thread(const std::string& chirp_id,
     // Get all ids of the chirps' replies
     std::string kReplyParentKey = "reply::" + chirp_id;
     std::string replies_serial = client_->get(kReplyParentKey);
-    if (replies_serial.length() > 0){
+    if (replies_serial.length() > 0) {
       // parse replies and return
       Replies replies;
       replies.ParseFromString(replies_serial);
