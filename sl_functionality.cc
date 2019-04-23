@@ -111,10 +111,11 @@ Chirps ServiceLayerFunctionality::stream(const std::string& username) {
   return chirps;
 }
 
-std::string ServiceLayerFunctionality::start_stream(const std::string& username,
-                                             const std::string& hashtag) {
+std::string ServiceLayerFunctionality::start_stream(
+    const std::string& username, const std::string& hashtag) {
   std::lock_guard<std::mutex> lock(sl_func_mtx_);
-  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos || hashtag.find("#") != 0 || hashtag.find(" ") != std::string::npos) {
+  if (hashtag.length() == 1 || hashtag.find("#") == std::string::npos ||
+      hashtag.find("#") != 0 || hashtag.find(" ") != std::string::npos) {
     return "ERROR";
   }
   // Form streaming key for the given hashtag
@@ -259,7 +260,7 @@ void ServiceLayerFunctionality::increment_chirp_count() {
   chirp_count_serial = std::to_string(count);
   client_->put(kChirpCountKey, chirp_count_serial);
 }
-std::string ServiceLayerFunctionality::stream_count(){
+std::string ServiceLayerFunctionality::stream_count() {
   std::string kStreamCountKey_ = "stream_count::";
   std::string stream_count_serial = client_->get(kStreamCountKey_);
   if (stream_count_serial.empty()) {
@@ -268,11 +269,11 @@ std::string ServiceLayerFunctionality::stream_count(){
   return stream_count_serial;
 }
 
-void ServiceLayerFunctionality::increment_stream_count(){
+void ServiceLayerFunctionality::increment_stream_count() {
   std::string kStreamCountKey_ = "stream_count::";
   std::string stream_count_serial = client_->get(kStreamCountKey_);
   int count = 0;
-  if(!stream_count_serial.empty()){
+  if (!stream_count_serial.empty()) {
     count = std::stoi(stream_count_serial);
   }
   count++;
@@ -362,7 +363,7 @@ void ServiceLayerFunctionality::read_thread(const std::string& chirp_id,
     // Get all ids of the chirps' replies
     std::string kReplyParentKey = "reply::" + chirp_id;
     std::string replies_serial = client_->get(kReplyParentKey);
-    if (replies_serial.length() > 0){
+    if (replies_serial.length() > 0) {
       // parse replies and return
       Replies replies;
       replies.ParseFromString(replies_serial);

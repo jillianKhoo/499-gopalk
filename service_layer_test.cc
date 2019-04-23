@@ -1,8 +1,8 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <gtest/gtest.h>
-#include "sl_functionality.h"
 #include "ServiceLayer.pb.h"
+#include "sl_functionality.h"
 
 // register new user returns true
 TEST(ServiceLayerFunctionalityTest, RegisterNewUser) {
@@ -304,7 +304,7 @@ TEST(ServiceLayerFunctionalityTest, InvalidHashtag) {
   EXPECT_EQ(start, "ERROR");
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

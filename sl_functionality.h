@@ -1,10 +1,10 @@
+#include <set>
 #include <stack>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <set>
 
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -62,7 +62,8 @@ class ServiceLayerFunctionality {
   Chirps stream(const std::string& username);
   // adds a user to the stream list for the given hashtag
   // returns the user's streaming id if successful, returns ERROR otherwise
-  std::string start_stream(const std::string& username, const std::string& hashtag);
+  std::string start_stream(const std::string& username,
+                           const std::string& hashtag);
   // removes a user from the stream list for the given hashtag
   void end_stream(const std::string& username, const std::string& hashtag);
   // clears monitor value so that monitored chirps are no longer broadcast to
