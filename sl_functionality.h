@@ -61,8 +61,8 @@ class ServiceLayerFunctionality {
   // return the current chirps broadcast to a user that is streaming
   Chirps stream(const std::string& username);
   // adds a user to the stream list for the given hashtag
-  // returns true if it is successful, returns false if there is an issue
-  bool start_stream(const std::string& username, const std::string& hashtag);
+  // returns the user's streaming id if successful, returns ERROR otherwise
+  std::string start_stream(const std::string& username, const std::string& hashtag);
   // removes a user from the stream list for the given hashtag
   void end_stream(const std::string& username, const std::string& hashtag);
   // clears monitor value so that monitored chirps are no longer broadcast to
@@ -86,6 +86,10 @@ class ServiceLayerFunctionality {
   void read_thread(const std::string& chirp_id, std::vector<Chirp>* chirps);
   // add one to total chirp count
   void increment_chirp_count();
+  // return current total cout of users streaming
+  std::string stream_count();
+  // add one to total stream count
+  void increment_stream_count();
   // broadcast a chirp to all followers of the user who are monitoring
   void broadcast_chirp(const std::string& username, Chirp chirp);
   // checks a chirp for hashtags and returns a vector with all of the hashtags

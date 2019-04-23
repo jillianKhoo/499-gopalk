@@ -60,14 +60,14 @@ Status ServiceLayerServer::read(ServerContext* context, const ReadRequest* reque
 
 Status ServiceLayerServer::stream(ServerContext* context, const StreamRequest* request, ServerWriter<StreamReply>* writer){
   // initial set up to start listening on the given hashtag
-  bool start = sl_func_.start_stream(request->username(), request->hashtag());
-  if (!start) {
+  std::string user_id = sl_func_.start_stream(request->username(), request->hashtag());
+  if (user_id == "ERROR") {
     return Status(StatusCode::INVALID_ARGUMENT, "Invalid hashtag");
   }
   // keep polling the database while stream is true
   while(!context->IsCancelled()) {
     // request the new chirps
-    Chirps chirps = sl_func_.stream(request->username());
+    Chirps chirps = sl_func_.stream(user_id);
     // loop through the chirps and add them to the reply
     for (int i = 0; i < chirps.chirps_size(); i++) {
       // add each chirp to stream
@@ -78,7 +78,7 @@ Status ServiceLayerServer::stream(ServerContext* context, const StreamRequest* r
     }
   }
   // clear the stream so that new requests aren't stored
-  sl_func_.end_stream(request->username(), request->hashtag());
+  sl_func_.end_stream(user_id, request->hashtag());
   return Status::OK;
 }
 

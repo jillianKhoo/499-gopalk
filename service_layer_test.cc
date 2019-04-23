@@ -227,10 +227,10 @@ TEST(ServiceLayerFunctionalityTest, Stream) {
   ServiceLayerFunctionality sl_func(true);
   sl_func.registeruser("jillian");
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
-  bool start = sl_func.start_stream("jillian", "#Athenahacks");
-  EXPECT_EQ(start, true);
+  std::string start = sl_func.start_stream("jillian", "#Athenahacks");
+  EXPECT_EQ(start, "0");
 
-  Chirps chirps1 = sl_func.stream("jillian");
+  Chirps chirps1 = sl_func.stream("0");
   // stream should not initially return a chirp
   EXPECT_EQ(chirps1.chirps_size(), 0);
 
@@ -240,18 +240,18 @@ TEST(ServiceLayerFunctionalityTest, Stream) {
   std::string parent_id1 = "-1";
   sl_func.chirp(chirp1, username1, text1, parent_id1);
 
-  chirps1 = sl_func.stream("jillian");
+  chirps1 = sl_func.stream("0");
   EXPECT_EQ(chirps1.chirps_size(), 1);
-  chirps1 = sl_func.stream("jillian");
+  chirps1 = sl_func.stream("0");
   EXPECT_EQ(chirps1.chirps_size(), 0);
 
-  sl_func.end_stream("jillian", "#Athenahacks");
+  sl_func.end_stream("0", "#Athenahacks");
   Chirp *chirp2 = new Chirp();
   std::string username2 = "krishna";
   std::string text2 = "#Athenahacks";
   std::string parent_id2 = "-1";
   sl_func.chirp(chirp2, username2, text2, parent_id2);
-  Chirps chirps2 = sl_func.stream("jillian");
+  Chirps chirps2 = sl_func.stream("0");
   EXPECT_EQ(chirps2.chirps_size(), 0);
 
   delete chirp1;
@@ -265,8 +265,8 @@ TEST(ServiceLayerFunctionalityTest, StreamInvalid) {
   ServiceLayerFunctionality sl_func(true);
   sl_func.registeruser("jillian");
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
-  bool start = sl_func.start_stream("jillian", "#Athenahacks");
-  EXPECT_EQ(start, true);
+  std::string start = sl_func.start_stream("jillian", "#Athenahacks");
+  EXPECT_EQ(start, "0");
 
   Chirp *chirp1 = new Chirp();
   std::string username1 = "krishna";
@@ -274,10 +274,10 @@ TEST(ServiceLayerFunctionalityTest, StreamInvalid) {
   std::string parent_id1 = "-1";
   sl_func.chirp(chirp1, username1, text1, parent_id1);
 
-  Chirps chirps1 = sl_func.stream("jillian");
+  Chirps chirps1 = sl_func.stream("0");
   EXPECT_EQ(chirps1.chirps_size(), 0);
 
-  sl_func.end_stream("jillian", "#Athenahacks");
+  sl_func.end_stream("0", "#Athenahacks");
 
   delete chirp1;
 }
@@ -290,18 +290,18 @@ TEST(ServiceLayerFunctionalityTest, InvalidHashtag) {
   EXPECT_EQ(sl_func.user_exists("jillian"), true);
 
   // start_stream should not accept a hashtag without characters after it
-  bool start = sl_func.start_stream("jillian", "#");
-  EXPECT_EQ(start, false);
+  std::string start = sl_func.start_stream("jillian", "#");
+  EXPECT_EQ(start, "ERROR");
 
   // start_stream should not accept a hashtag without a # in front
   start = sl_func.start_stream("jillian", "athenahacks");
-  EXPECT_EQ(start, false);
+  EXPECT_EQ(start, "ERROR");
   start = sl_func.start_stream("jillian", "athena#hacks");
-  EXPECT_EQ(start, false);
+  EXPECT_EQ(start, "ERROR");
 
   // start_stream should not accept an empty hashtag
   start = sl_func.start_stream("jillian", "");
-  EXPECT_EQ(start, false);
+  EXPECT_EQ(start, "ERROR");
 }
 
 int main(int argc, char* argv[]) {
