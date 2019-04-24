@@ -302,6 +302,10 @@ TEST(ServiceLayerFunctionalityTest, InvalidHashtag) {
   // start_stream should not accept an empty hashtag
   start = sl_func.start_stream("jillian", "");
   EXPECT_EQ(start, "ERROR");
+
+  // start_stream should not allow hashtags to have spaces
+  start = sl_func.start_stream("jillian", "#hi there");
+  EXPECT_EQ(start, "ERROR");
 }
 
 int main(int argc, char *argv[]) {
