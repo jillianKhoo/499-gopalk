@@ -60,12 +60,12 @@ message MonitorReply {
 }
 
 message StreamRequest {
-  string username = 1;
-  string hashtag = 2;
+  string username = 1; // The user who requested to stream
+  string hashtag = 2; // The hashtag the user wants to follow
 }
 
 message StreamReply {
-  Chirp chirp = 1;
+  Chirp chirp = 1; // a chirp with the requested hashtag
 }
 
 service ServiceLayer {

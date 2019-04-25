@@ -64,7 +64,7 @@ class ServiceLayerServer final : public ServiceLayer::Service {
   // allow user to read a thread
   Status read(ServerContext* context, const ReadRequest* request,
               ReadReply* reply) override;
-  // allos user to stream chirps with a given hashtag
+  // allow user to stream chirps with a given hashtag
   Status stream(ServerContext* context, const StreamRequest* request,
                 ServerWriter<StreamReply>* writer) override;
   // allow user to monitor followers

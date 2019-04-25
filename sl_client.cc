@@ -120,7 +120,7 @@ const google::protobuf::RepeatedPtrField<chirp::Chirp> ServiceLayerClient::read(
 }
 void ServiceLayerClient::stream(const std::string& username,
                                 const std::string& hashtag) {
-  // create request with username of monitoring user
+  // create request with username of streaming user
   StreamRequest request;
   request.set_username(username);
   request.set_hashtag(hashtag);
